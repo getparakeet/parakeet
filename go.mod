@@ -1,3 +1,5 @@
 module github.com/parakeet-cloud/parakeet
 
 go 1.16
+
+require github.com/BurntSushi/toml v0.4.1
