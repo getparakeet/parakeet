@@ -1,4 +1,4 @@
-module github.com/parakeet-cloud/parakeet
+module github.com/getparakeet/parakeet
 
 go 1.16
 
