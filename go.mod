@@ -4,5 +4,5 @@ go 1.16
 
 require (
 	github.com/BurntSushi/toml v0.4.1
-	github.com/valyala/fasthttp v1.29.0
+	github.com/logrusorgru/aurora v2.0.3+incompatible
 )

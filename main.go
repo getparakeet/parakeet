@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/BurntSushi/toml"
-	"github.com/getparakeet/parakeet/src/node/express"
+	"github.com/getparakeet/parakeet/errors"
 )
 
 type tomlConfig struct {
@@ -29,36 +29,36 @@ func checkTomlConfig() {
 	key := getTomlConfig().Key
 	title := getTomlConfig().ProjectTitle
 	if key == "" {
-		panic("No key found in parakeet.toml")
+		errors.NoKeyError()
 	} else if strings.Contains(key, "<script>") {
-		panic("You're not allowed to do that. Stop being naughty.")
+		errors.SecurityError(fmt.Errorf("key contains <script> tag"))
 	} else if strings.Contains(key, "SELECT") {
-		panic("You're not allowed to do that. Stop being naughty.")
+		errors.SecurityError(fmt.Errorf("key contains SELECT statement"))
 	} else if strings.Contains(key, "DROP") {
-		panic("You're not allowed to do that. Stop being naughty.")
+		errors.SecurityError(fmt.Errorf("key contains DROP statement"))
 	}
 	body, err := json.Marshal(map[string]string{
 		"projectTitle": title,
 		"key":          key,
 	})
 	if err != nil {
-		panic(err)
+		errors.UnknownError(err)
 	}
 	res, err := http.Post("https://api.parakeet.cloud/v1/verify/key", "application/json", bytes.NewBuffer(body))
 	if err != nil {
-		panic(err)
+		errors.UnknownError(err)
 	}
 	defer res.Body.Close()
 	body, err = ioutil.ReadAll(res.Body)
 	if err != nil {
-		panic(err)
+		errors.UnknownError(err)
 	}
 	if res.StatusCode == 400 {
-		panic("Invalid key. Please check `Key` and `ProjectTitle` in your parakeet.toml file.")
+		errors.UnknownError(fmt.Errorf("invalid key. Please check `Key` and `ProjectTitle` in your parakeet.toml file"))
 	}
 }
 func main() {
 	fmt.Printf("Initializing project of type %s\n", getTomlConfig().Language)
 	checkTomlConfig()
-	
+
 }
