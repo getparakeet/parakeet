@@ -1,15 +1,14 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net/http"
 	"strings"
 
 	"github.com/BurntSushi/toml"
 	"github.com/getparakeet/parakeet/errors"
+	"github.com/getparakeet/parakeet/src"
 )
 
 type tomlConfig struct {
@@ -44,10 +43,7 @@ func checkTomlConfig() {
 	if err != nil {
 		errors.UnknownError(err)
 	}
-	res, err := http.Post("https://api.parakeet.cloud/v1/verify/key", "application/json", bytes.NewBuffer(body))
-	if err != nil {
-		errors.UnknownError(err)
-	}
+	res := src.PostHttp("https://api.parakeet.cloud/v1/verify/key", body)
 	defer res.Body.Close()
 	body, err = ioutil.ReadAll(res.Body)
 	if err != nil {
