@@ -56,5 +56,4 @@ func checkTomlConfig() {
 func main() {
 	fmt.Printf("Initializing project of type %s\n", getTomlConfig().Language)
 	checkTomlConfig()
-
 }
